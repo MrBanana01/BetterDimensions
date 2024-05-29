@@ -16,7 +16,10 @@ namespace BetterDimensions.Content {
      */
 
     public class BetterDimensionsManager : MonoBehaviour {
-        public List<BDCommand> Commands = new List<BDCommand>() {
+        /// <summary>
+        /// All commands that can be used
+        /// </summary>
+        public static List<BDCommand> Commands = new List<BDCommand>() {
             new BDCommand {
                 Prefixes = new List <string> { "*" },
                 Command = "var",
@@ -88,6 +91,35 @@ namespace BetterDimensions.Content {
             },
         };
 
+        //This is temp until I get the reference from the mod
+        public List<GameObject> AllObjects = new List<GameObject>();
 
+        /// <summary>
+        /// Checks every gameobject for commands and applies them
+        /// </summary>
+        public void CheckForCommands() {
+            foreach (GameObject obj in AllObjects) {
+
+                var matchedCommand = GetMatchedCommand(obj.name);
+
+                if (matchedCommand == null)
+                    return;
+
+                switch ((obj.name, matchedCommand)) {
+                    case (string ObjName, BDCommand command):
+                        break;
+                }
+            }
+        }
+
+        BDCommand? GetMatchedCommand(string objName) {
+            foreach (var command in Commands) {
+                if (objName.Contains(command.Command)) {
+                    return command;
+                }
+            }
+
+            return null;
+        }
     }
 }
