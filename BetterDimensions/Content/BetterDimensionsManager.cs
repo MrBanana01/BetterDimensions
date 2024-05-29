@@ -114,27 +114,22 @@ namespace BetterDimensions.Content {
 
                 var matchedCommand = GetMatchedCommand(obj.name);
 
-                if (matchedCommand == null)
-                    return;
+                if (matchedCommand is null)
+                    continue;
 
-                switch ((obj.name, matchedCommand)) {
-                    case (string ObjName, BDCommand command):
 
-                        break;
-                }
             }
         }
 
-        public void RunCommand(GameObject objWithCommand, BDCommand command) {
+        public static void RunCommand(GameObject objWithCommand, BDCommand command) {
 
         }
 
         BDCommand? GetMatchedCommand(string objName) {
-            foreach (var command in Commands) {
-                if (objName.Contains(command.Command)) {
-                    return command;
-                }
-            }
+            foreach (var command in Commands)
+                foreach (var prefix in command.Prefixes)
+                    if (objName.Contains($"{prefix}{command.Command}"))
+                        return command;
 
             return null;
         }

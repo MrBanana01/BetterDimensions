@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BetterDimensions.Content {
     public enum TriggerType {
@@ -11,9 +9,34 @@ namespace BetterDimensions.Content {
         All
     }
 
-    internal class Trigger {
-        void OnTriggerEnter(Collider other) {
+    internal class Trigger : MonoBehaviour {
+        public BDCommand CommandRef;
 
+        public TriggerType Type;
+
+        void OnTriggerEnter(Collider other) {
+            switch (Type) {
+                case TriggerType.RightHand:
+                    if(other.name is "")
+                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                    break;
+                case TriggerType.LeftHand:
+                    if (other.name is "")
+                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                    break;
+                case TriggerType.BothHands:
+                    if (other.name is "")
+                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                    break;
+                case TriggerType.Body:
+                    if (other.name is "")
+                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                    break;
+                case TriggerType.All:
+                    if (other.name is "")
+                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                    break;
+            }
         }
     }
 }

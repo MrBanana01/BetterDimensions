@@ -22,7 +22,7 @@ namespace BetterDimensions {
                 Debug.Log("Loading BetterDimensions content...");
                 gameObject.AddComponent<BetterDimensionsManager>();
 
-                if(gameObject.GetComponent<BetterDimensionsManager>() == null)
+                if(gameObject.GetComponent<BetterDimensionsManager>() is null)
                     Debug.LogError("BetterDimensions failed to load for unknown reasons");
                 else
                     Debug.Log("Successfully loaded BetterDimensions");
