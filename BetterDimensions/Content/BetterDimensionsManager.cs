@@ -5,6 +5,7 @@ namespace BetterDimensions.Content {
     public struct BDCommand {
         public List<string> Prefixes;
         public string Command;
+        public string CommandBuild;
         public bool GrabsValue;
     }
 
@@ -13,6 +14,7 @@ namespace BetterDimensions.Content {
      * @ = event
      * # = awake method
      * * = variable
+     * % = Custom Data
      */
 
     public class BetterDimensionsManager : MonoBehaviour {
@@ -23,6 +25,7 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List <string> { "*" },
                 Command = "var",
+                CommandBuild = "{0}/*",
                 GrabsValue = true,
                 //Grabbed value: var/data
             },
@@ -30,6 +33,7 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List <string> { "$", "#" },
                 Command = "if",
+                CommandBuild = "{0}/%/*/%/%",
                 GrabsValue = true,
                 //Grabbed value: if/Gameobject with variable/expectedValue/Gameobject with method if true/Gameobject with method if false
             },
@@ -37,6 +41,7 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List <string> { "$", "#" },
                 Command = "changevar",
+                CommandBuild = "{0}/%",
                 GrabsValue = true,
                 //Grabbed value: changevar/Gameobject with variable
             },
@@ -44,13 +49,15 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List<string> { "#", "$" },
                 Command = "addtrigger",
+                CommandBuild = "{0}/*/%",
                 GrabsValue = true,
-                //Grabbed value: addtrigger/Trigger ID
+                //Grabbed value: addtrigger/Trigger ID/Trigger Type (left, right, body, both, all)
             },
 
             new BDCommand {
                 Prefixes = new List<string> { "@" },
                 Command = "ontrigger",
+                CommandBuild = "{0}/*/%",
                 GrabsValue = true
                 //Grabbed value: ontrigger/TriggerID/Gameobject With Method
             },
@@ -58,13 +65,15 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List<string> { "#", "$" },
                 Command = "setactive",
+                CommandBuild = "{0}/*/%",
                 GrabsValue = true,
-                //Grabbed value: setactive=bool(gameobject name)
+                //Grabbed value: setactive/bool/gameobject name
             },
 
             new BDCommand {
                 Prefixes = new List<string> { "#", "$" },
                 Command = "sethitsound",
+                CommandBuild = "{0}/*",
                 GrabsValue = true,
                 //Grabbed value: sethitsound/HitsoundID
             },
@@ -72,6 +81,7 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List <string> { "#", "$" },
                 Command = "playaudio",
+                CommandBuild = "{0}/%",
                 GrabsValue = true,
                 //Grabbed value: playaudio/Gameobject with audiosource
             },
@@ -79,6 +89,7 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List <string> { "#", "$" },
                 Command = "starttimer",
+                CommandBuild = "{0}/*/*",
                 GrabsValue = true,
                 //Grabbed value: starttimer/Timer ID/Length in seconds
             },
@@ -86,6 +97,7 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Prefixes = new List <string> { "@" },
                 Command = "ontimerend",
+                CommandBuild = "{0}/*/%",
                 GrabsValue = true,
                 //Grabbed value: ontimerend/Timer ID/Gameobject with method
             },
@@ -107,9 +119,14 @@ namespace BetterDimensions.Content {
 
                 switch ((obj.name, matchedCommand)) {
                     case (string ObjName, BDCommand command):
+
                         break;
                 }
             }
+        }
+
+        public void RunCommand(GameObject objWithCommand, BDCommand command) {
+
         }
 
         BDCommand? GetMatchedCommand(string objName) {
