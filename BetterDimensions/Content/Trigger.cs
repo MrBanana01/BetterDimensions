@@ -10,31 +10,33 @@ namespace BetterDimensions.Content {
     }
 
     internal class Trigger : MonoBehaviour {
-        public BDCommand CommandRef;
-
         public TriggerType Type;
+
+        public int ID;
+
+        #pragma warning disable IDE0051
 
         void OnTriggerEnter(Collider other) {
             switch (Type) {
                 case TriggerType.RightHand:
                     if(other.name is "")
-                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                        BetterDimensionsManager.RunEvent(ID);
                     break;
                 case TriggerType.LeftHand:
                     if (other.name is "")
-                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                        BetterDimensionsManager.RunEvent(ID);
                     break;
                 case TriggerType.BothHands:
                     if (other.name is "")
-                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                        BetterDimensionsManager.RunEvent(ID);
                     break;
                 case TriggerType.Body:
                     if (other.name is "")
-                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                        BetterDimensionsManager.RunEvent(ID);
                     break;
                 case TriggerType.All:
                     if (other.name is "")
-                        BetterDimensionsManager.RunCommand(gameObject, CommandRef);
+                        BetterDimensionsManager.RunEvent(ID);
                     break;
             }
         }
