@@ -129,6 +129,9 @@
     <Reference Include="Meta.XR.BuildingBlocks">
       <HintPath>..\..\..\..\..\..\..\Program Files\Oculus\Software\Software\another-axiom-gorilla-tag\Gorilla Tag_Data\Managed\Meta.XR.BuildingBlocks.dll</HintPath>
     </Reference>
+    <Reference Include="Monke Dimensions">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Oculus\Software\Software\another-axiom-gorilla-tag\BepInEx\plugins\MonkeDimensions\Monke Dimensions.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\..\..\..\..\..\Program Files\Oculus\Software\Software\another-axiom-gorilla-tag\BepInEx\core\Mono.Cecil.dll</HintPath>
     </Reference>

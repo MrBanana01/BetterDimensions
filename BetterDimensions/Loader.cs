@@ -3,8 +3,6 @@ using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
 using BetterDimensions.Content;
-using System.IO;
-using System;
 
 namespace BetterDimensions {
 
