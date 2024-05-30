@@ -2,6 +2,7 @@
 using Monke_Dimensions.API;
 using System;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 namespace BetterDimensions.Content {
@@ -293,13 +294,48 @@ namespace BetterDimensions.Content {
                         }
 
                         GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        BDVariable BDvar = obj.GetComponent<BDVariable>();
 
-                        if (obj is null || obj.GetComponent<BDVariable>() is null) {
+                        if (obj is null || BDvar is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject variable to change");
                             break;
                         }
 
-                        obj.GetComponent<BDVariable>().VariableBuild.VariableData = Commandparts[2];
+                        if (!BDvar.VariableChanged) {
+                            BDvar.VariableBuild.VariableData = Commandparts[2];
+
+                            if(BDvar.VariableBuild.Type == VariableType.OneChange)
+                                BDvar.VariableChanged = true;
+                        }
+                        break;
+                    }
+
+                    if (CheckParts[0] is "addtrigger" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"addtrigger\" but some values were empty");
+                            break;
+                        }
+
+                        Trigger trigger = method.gameObject.AddComponent<Trigger>();
+                        trigger.ID = int.Parse(Commandparts[1]);
+
+                        switch (Commandparts[2]) {
+                            case "right":
+                                trigger.Type = TriggerType.RightHand;
+                                break;
+                            case "left":
+                                trigger.Type = TriggerType.LeftHand;
+                                break;
+                            case "both":
+                                trigger.Type = TriggerType.BothHands;
+                                break;
+                            case "body":
+                                trigger.Type = TriggerType.Body;
+                                break;
+                            case "all":
+                                trigger.Type = TriggerType.All;
+                                break;
+                        }
                         break;
                     }
                 }
