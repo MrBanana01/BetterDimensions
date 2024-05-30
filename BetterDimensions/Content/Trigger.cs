@@ -20,23 +20,23 @@ namespace BetterDimensions.Content {
             switch (Type) {
                 case TriggerType.RightHand:
                     if(other.name is "")
-                        BetterDimensionsManager.RunEvent(ID);
+                        BetterDimensionsManager.instance.RunEvent(gameObject, ID);
                     break;
                 case TriggerType.LeftHand:
                     if (other.name is "")
-                        BetterDimensionsManager.RunEvent(ID);
+                        BetterDimensionsManager.instance.RunEvent(gameObject, ID);
                     break;
                 case TriggerType.BothHands:
                     if (other.name is "")
-                        BetterDimensionsManager.RunEvent(ID);
+                        BetterDimensionsManager.instance.RunEvent(gameObject, ID);
                     break;
                 case TriggerType.Body:
                     if (other.name is "")
-                        BetterDimensionsManager.RunEvent(ID);
+                        BetterDimensionsManager.instance.RunEvent(gameObject, ID);
                     break;
                 case TriggerType.All:
                     if (other.name is "")
-                        BetterDimensionsManager.RunEvent(ID);
+                        BetterDimensionsManager.instance.RunEvent(gameObject, ID);
                     break;
             }
         }

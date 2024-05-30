@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace BetterDimensions.Content {
-    public struct BDCommand {
+    public class BDCommand {
         public List<char> Prefixes;
         public string Command;
         public string CommandBuild;
@@ -19,7 +19,25 @@ namespace BetterDimensions.Content {
      */
 
     public class BetterDimensionsManager : MonoBehaviour {
-        public static List<BDCommand> Commands = new List<BDCommand>() {
+        public static BetterDimensionsManager instance;
+
+        void Awake() {
+            instance = this;
+            WaitForEvent();
+        }
+
+        void WaitForEvent() =>
+            BDEvent += (obj, ID) => {
+                BDCommand eventCmd = new BDCommand();
+
+                foreach(BDCommand cmd in Commands)
+                    if (cmd.Prefixes.Contains('@') && cmd.Command is "eventcalled")
+                        eventCmd = cmd;
+
+                RunCommand(obj, eventCmd, new object[] { ID });
+            };
+
+        public List<BDCommand> Commands = new List<BDCommand>() {
             new BDCommand {
                 Prefixes = new List <char> { '*' },
                 Command = "var",
@@ -93,12 +111,12 @@ namespace BetterDimensions.Content {
             },
         };
 
-        public static Action<int>? BDEvent;
+        public Action<GameObject, int>? BDEvent;
 
         //This is temp until I get the reference from the mod
         public List<GameObject> AllObjects = new List<GameObject>();
 
-        public void CheckForCommands() {
+        void CheckForCommands() {
             foreach (GameObject obj in AllObjects) {
 
                 var matchedCommand = GetMatchedCommand(obj.name);
@@ -108,7 +126,7 @@ namespace BetterDimensions.Content {
 
                 char UsedPrefix = '?';
 
-                foreach(var prefix in matchedCommand.Value.Prefixes) {
+                foreach(var prefix in matchedCommand.Prefixes) {
                     if (obj.name.Contains(prefix)) {
                         UsedPrefix = prefix;
                         break;
@@ -120,16 +138,16 @@ namespace BetterDimensions.Content {
                     continue;
                 }
 
-                switch (matchedCommand.Value.Command) {
+                switch (matchedCommand.Command) {
                     case "addtrigger":
                         if (UsedPrefix is '#')
-                            RunCommand(obj, matchedCommand.Value);
+                            RunCommand(obj, matchedCommand);
                         break;
                 }
             }
         }
 
-        public static void RunCommand(GameObject obj, BDCommand command) {
+        public void RunCommand(GameObject obj, BDCommand command, object[]? data = null) {
             switch (command.Command) {
                 case "addtrigger":
                     if(obj.GetComponent<Trigger>() != null) {
@@ -138,7 +156,6 @@ namespace BetterDimensions.Content {
                     }
 
                     Trigger comp = obj.AddComponent<Trigger>();
-                    comp.CommandRef = command;
                     string[] parts = obj.name.Split('/');
 
                     #pragma warning disable IDE0059
@@ -168,11 +185,20 @@ namespace BetterDimensions.Content {
                             break;
                     }
                     break;
+                case "eventcalled":
+                    foreach(GameObject objs in AllObjects) {
+                        var matchedCommand = GetMatchedCommand(objs.name);
+
+                        if (matchedCommand == command) {
+                            if()
+                        }
+                    }
+                    break;
             }
         }
 
-        public static void RunEvent(int EventID) =>
-            BDEvent?.Invoke(EventID);
+        public void RunEvent(GameObject obj, int EventID) =>
+            BDEvent?.Invoke(obj, EventID);
 
         BDCommand? GetMatchedCommand(string objName) {
             foreach (var command in Commands)
