@@ -36,6 +36,7 @@ namespace BetterDimensions.Content {
 
             };
 
+        [HideInInspector]
         public List<BDCommand> Commands = new List<BDCommand>() {
             new BDCommand {
                 Prefixes = new List <char> { '*' },
@@ -110,6 +111,7 @@ namespace BetterDimensions.Content {
             },
         };
 
+        [HideInInspector]
         public Action<GameObject, int>? BDEvent;
 
         void ApplyCommands() {
