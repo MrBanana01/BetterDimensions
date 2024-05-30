@@ -3,6 +3,8 @@ using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
 using BetterDimensions.Content;
+using System.IO;
+using System;
 
 namespace BetterDimensions {
 
@@ -19,10 +21,17 @@ namespace BetterDimensions {
             Patch();
 
             Utilla.Events.GameInitialized += (sender, args) => {
+                string[] typeNames = { "BDEvent", "BDMethod", "BDVariable" };
+
+                string pluginPath = $"{Paths.PluginPath}\\BetterDimensions\\BetterDimensionEditor.dll";
+
+                byte[] dllBytes = System.IO.File.ReadAllBytes(pluginPath);
+                Assembly loadedAssembly = Assembly.Load(dllBytes);
+
                 Debug.Log("Loading BetterDimensions content...");
                 gameObject.AddComponent<BetterDimensionsManager>();
 
-                if(gameObject.GetComponent<BetterDimensionsManager>() is null)
+                if(gameObject.GetComponent<BetterDimensionsManager>() is null || loadedAssembly is null)
                     Debug.LogError("BetterDimensions failed to load for unknown reasons");
                 else
                     Debug.Log("Successfully loaded BetterDimensions");
