@@ -41,7 +41,27 @@ namespace BetterDimensions.Content {
         }
 
         void EventCalled(GameObject obj, int ID) {
+            foreach(GameObject BDobj in AllObjects) {
+                if(BDobj.GetComponent<BDEvent>() != null) {
+                    BDEvent Event = BDobj.GetComponent<BDEvent>();
+                    if (Event.EventBuild.EventID == ID) {
+                        string[] MethodCommands = Event.ObjectCommands.Split('|');
+                        foreach (string cmd in MethodCommands) {
+                            GameObject objInMap = DimensionTools.FindObjectInDimension(cmd);
+                            if (objInMap.GetComponent<BDMethod>() is null) {
+                                Debug.LogError($"Object {obj.name} recived an event and tried to execute a method but the method was not found");
+                                break;
+                            }
 
+                            if (!Event.EventRan) {
+                                RunCommands(objInMap.GetComponent<BDMethod>());
+                                if (Event.EventBuild.type is BetterDimensionsEditorTools.EventType.OneTrigger)
+                                    Event.EventRan = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public List<BDCommand> Commands = new List<BDCommand>() {
