@@ -71,19 +71,19 @@ namespace BetterDimensions.Content {
             new BDCommand {
                 Command = "if/%/*/&/^",
                 GrabbedValueSpots = new List<char> { '%', '*', '&', '^'  }
-                //Grabbed value: if/Gameobject with variable/expectedValue/Gameobject with method if true/Gameobject with method if false
+                //Grabbed value: if/Gameobject with variable/expectedValue/EventID if true/EventID if false
             },
 
             new BDCommand {
                 Command = "ifnot/%/*/&/^",
                 GrabbedValueSpots = new List<char> { '%', '*', '&', '^'  }
-                //Grabbed value: ifnot/Gameobject with variable/expectedValue/Gameobject with method if false/Gameobject with method if true
+                //Grabbed value: ifnot/Gameobject with variable/expectedValue/EventID if true/EventID if false
             },
 
             new BDCommand {
-                Command = "changevar/%",
-                GrabbedValueSpots = new List<char> { '%' }
-                //Grabbed value: changevar/Gameobject with variable
+                Command = "changevar/%/*",
+                GrabbedValueSpots = new List<char> { '%', '*' }
+                //Grabbed value: changevar/Gameobject with variable/variable data to change to
             },
 
             new BDCommand {
@@ -179,9 +179,23 @@ namespace BetterDimensions.Content {
                 foreach(BDCommand command in Commands) {
                     string[] CheckParts = command.Command.Split('/');
 
+                    if (CheckParts[0] is "" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"\" but");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+
+                        if (obj is null || obj.GetComponent<BDMethod>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"\" but");
+                            break;
+                        }
+                        break;
+                    }
 
                     if (CheckParts[0] is "debuglog" && Commandparts[0] == CheckParts[0]) {
-                        if (Commandparts[1] is null || Commandparts[1] is "") {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"debuglog\" but put no message to log");
                             break;
                         }
@@ -192,7 +206,7 @@ namespace BetterDimensions.Content {
                     }
 
                     if (CheckParts[0] is "debuglogwarning" && Commandparts[0] == CheckParts[0]) {
-                        if (Commandparts[1] is null || Commandparts[1] is "") {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"debuglogwarning\" but put no message to log");
                             break;
                         }
@@ -203,13 +217,89 @@ namespace BetterDimensions.Content {
                     }
 
                     if (CheckParts[0] is "debuglogerror" && Commandparts[0] == CheckParts[0]) {
-                        if (Commandparts[1] is null || Commandparts[1] is "") {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"debuglogerror\" but put no message to log");
                             break;
                         }
 
                         Debug.LogError(Commandparts[1]);
 
+                        break;
+                    }
+
+                    if (CheckParts[0] is "runmethod" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put no GameObject method to run");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+
+                        if(obj is null || obj.GetComponent<BDMethod>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject method to run");
+                            break;
+                        }
+
+                        RunCommands(obj.GetComponent<BDMethod>());
+                        break;
+                    }
+
+                    if (CheckParts[0] is "if" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2]) || string.IsNullOrWhiteSpace(Commandparts[3])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"if\" some values were empty");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+
+                        if (obj is null || obj.GetComponent<BDVariable>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject variable to check");
+                            break;
+                        }
+
+                        if (Commandparts[1] == Commandparts[2])
+                            RunEvent(obj, int.Parse(Commandparts[3]));
+                        else
+                            RunEvent(obj, int.Parse(Commandparts[4]));
+
+                        break;
+                    }
+
+                    if (CheckParts[0] is "ifnot" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2]) || string.IsNullOrWhiteSpace(Commandparts[3])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"if\" some values were empty");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+
+                        if (obj is null || obj.GetComponent<BDVariable>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject variable to check");
+                            break;
+                        }
+
+                        if (Commandparts[1] != Commandparts[2])
+                            RunEvent(obj, int.Parse(Commandparts[3]));
+                        else
+                            RunEvent(obj, int.Parse(Commandparts[4]));
+
+                        break;
+                    }
+
+                    if (CheckParts[0] is "changevar" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"changevar\" but put no GameObject variable to change");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+
+                        if (obj is null || obj.GetComponent<BDVariable>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject variable to change");
+                            break;
+                        }
+
+                        obj.GetComponent<BDVariable>().VariableBuild.VariableData = Commandparts[2];
                         break;
                     }
                 }
