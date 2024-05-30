@@ -2,7 +2,7 @@
 using Monke_Dimensions.API;
 using System;
 using System.Collections.Generic;
-using Unity.XR.CoreUtils;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace BetterDimensions.Content {
@@ -114,15 +114,9 @@ namespace BetterDimensions.Content {
             },
 
             new BDCommand {
-                Command = "eventcalled/%/^",
-                GrabbedValueSpots = new List<char> { '%', '^' }
-                //Grabbed value: eventcalled/EventID/Gameobject With Method
-            },
-
-            new BDCommand {
                 Command = "setactive/*/%",
                 GrabbedValueSpots = new List<char> { '*', '%' }
-                //Grabbed value: setactive/bool/gameobject name
+                //Grabbed value: setactive/gameobject name/bool
             },
 
             new BDCommand {
@@ -192,7 +186,7 @@ namespace BetterDimensions.Content {
             }
         }
 
-        public void RunCommands(BDMethod method) {
+        public async void RunCommands(BDMethod method) {
             string[] MethodCommands = method.Commands.Split('|');
 
             foreach(string cmd in MethodCommands) {
@@ -202,7 +196,7 @@ namespace BetterDimensions.Content {
 
                     if (CheckParts[0] is "" && Commandparts[0] == CheckParts[0]) {
                         if (string.IsNullOrWhiteSpace(Commandparts[1])) {
-                            Debug.LogError($"Object {method.gameObject.name} tried running \"\" but");
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"\" but some values were empty");
                             break;
                         }
 
@@ -356,6 +350,71 @@ namespace BetterDimensions.Content {
                                 trigger.Type = TriggerType.All;
                                 break;
                         }
+                        break;
+                    }
+
+                    if (CheckParts[0] is "setactive" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"setactive\" but some values were empty");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+
+                        if (obj is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"setactive\" on an object but that object didn't exist");
+                            break;
+                        }
+
+                        if (Commandparts[2] is "true" || Commandparts[2] is "t")
+                            obj.SetActive(true);
+                        else if (Commandparts[2] is "false" || Commandparts[2] is "f")
+                            obj.SetActive(false);
+                        break;
+                    }
+
+                    if (CheckParts[0] is "sethitsound" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"sethitsound\" but some values were empty");
+                            break;
+                        }
+
+                        if(method.gameObject.GetComponent<GorillaSurfaceOverride>() is null)
+                            method.gameObject.AddComponent<GorillaSurfaceOverride>();
+
+                        method.gameObject.GetComponent<GorillaSurfaceOverride>().overrideIndex = int.Parse(Commandparts[1]);
+                        break;
+                    }
+
+                    if (CheckParts[0] is "playaudio" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"playaudio\" but some values were empty");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+
+                        if (obj is null || obj.GetComponent<AudioSource>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"playaudio\" but the targeted GameObject didn't have an audio source or didn't exist");
+                            break;
+                        }
+
+                        obj.GetComponent<AudioSource>().Play();
+                        break;
+                    }
+
+                    if (CheckParts[0] is "starttimer" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"starttimer\" but some values were empty");
+                            break;
+                        }
+
+                        int EventID = 0;
+                        int TimeInSeconds = 0;
+
+                        await Task.Delay(TimeInSeconds * 1000);
+
+                        RunEvent(method.gameObject, EventID);
                         break;
                     }
                 }
