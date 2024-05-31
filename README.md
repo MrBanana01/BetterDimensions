@@ -1,4 +1,6 @@
 A mod for the gorilla tag mod "MonkeDimensions" that adds a whole programming language that can be used in the editor.
+## if you need help, you can ping me in the MonkeDimensions discord server: https://discord.gg/chin-s-server-1041450240135413890
+## My username: mrbananabutcat
 
 --------------------------------------------------------------------------------------------------------------
 
