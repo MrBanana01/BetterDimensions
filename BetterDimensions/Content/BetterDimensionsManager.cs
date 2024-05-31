@@ -3,7 +3,9 @@ using Monke_Dimensions.API;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BetterDimensions.Content {
     public class BDCommand {
@@ -148,6 +150,24 @@ namespace BetterDimensions.Content {
                 GrabbedValueSpots = new List<char> { '*', '%' }
                 //Grabbed value: starttimer/EventID/Length in seconds
             },
+
+            new BDCommand {
+                Command = "stopaudio/%",
+                GrabbedValueSpots = new List<char> { '%' }
+                //Grabbed value: stopaudio/Gameobject with audiosource
+            },
+
+            new BDCommand {
+                Command = "randomint/%/*/^/$",
+                GrabbedValueSpots = new List<char> { '%', '*', '^', '$' }
+                //Grabbed value: randomint/min/max/Gameobject with variable/Event ID
+            },
+
+            new BDCommand {
+                Command = "settext/%/*/&",
+                GrabbedValueSpots = new List<char> { '%', '*', '&' }
+                //Grabbed value: settext/newvalue/Gameobject with TMPro/variable
+            },
         };
 
         public Action<GameObject, int>? BDEvent;
@@ -281,7 +301,7 @@ namespace BetterDimensions.Content {
                     }
 
                     if (CheckParts[0] is "if" && Commandparts[0] == CheckParts[0]) {
-                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2]) || string.IsNullOrWhiteSpace(Commandparts[3])) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2]) || string.IsNullOrWhiteSpace(Commandparts[3]) || string.IsNullOrWhiteSpace(Commandparts[4])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"if\" some values were empty");
                             break;
                         }
@@ -302,7 +322,7 @@ namespace BetterDimensions.Content {
                     }
 
                     if (CheckParts[0] is "ifnot" && Commandparts[0] == CheckParts[0]) {
-                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2]) || string.IsNullOrWhiteSpace(Commandparts[3])) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2]) || string.IsNullOrWhiteSpace(Commandparts[3]) || string.IsNullOrWhiteSpace(Commandparts[4])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"if\" some values were empty");
                             break;
                         }
@@ -346,7 +366,7 @@ namespace BetterDimensions.Content {
                     }
 
                     if (CheckParts[0] is "addtrigger" && Commandparts[0] == CheckParts[0]) {
-                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"addtrigger\" but some values were empty");
                             break;
                         }
@@ -369,7 +389,7 @@ namespace BetterDimensions.Content {
                     }
 
                     if (CheckParts[0] is "setactive" && Commandparts[0] == CheckParts[0]) {
-                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[1])) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"setactive\" but some values were empty");
                             break;
                         }
@@ -436,17 +456,60 @@ namespace BetterDimensions.Content {
                     }
 
                     if (CheckParts[0] is "starttimer" && Commandparts[0] == CheckParts[0]) {
-                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"starttimer\" but some values were empty");
                             break;
                         }
 
-                        int EventID = 0;
-                        int TimeInSeconds = 0;
+                        int EventID = int.Parse(Commandparts[1]);
+                        int TimeInSeconds = int.Parse(Commandparts[2]);
 
                         await Task.Delay(TimeInSeconds * 1000);
 
                         RunEvent(method.gameObject, EventID);
+                        break;
+                    }
+
+                    if (CheckParts[0] is "randomint" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2]) || string.IsNullOrWhiteSpace(Commandparts[3]) || string.IsNullOrWhiteSpace(Commandparts[4])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"randomint\" but some values were empty");
+                            break;
+                        }
+
+                        int randomValue = Random.Range(int.Parse(Commandparts[1]), int.Parse(Commandparts[2]));
+                        GameObject obj = FindObjectInDimension(Commandparts[3]);
+
+                        if(obj is null || obj.GetComponent<BDVariable>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"randomint\" and changing a variable on a gameobject but it didn't exist or didn't have a variable comp");
+                            break;
+                        }
+
+                        obj.GetComponent<BDVariable>().VariableBuild.VariableData = randomValue.ToString();
+                        RunEvent(method.gameObject, int.Parse(Commandparts[4]));
+                        break;
+                    }
+
+                    if (CheckParts[0] is "settext" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[2])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"settext\" but some values were empty");
+                            break;
+                        }
+
+                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[2]);
+                        GameObject obj3 = null;
+
+                        if (!string.IsNullOrWhiteSpace(Commandparts[3]))
+                           obj3 = DimensionTools.FindObjectInDimension(Commandparts[3]);
+
+                        if (obj is null || obj.GetComponent<TextMeshPro>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"settext\" but no objects were found with the TextMeshPro comp");
+                            break;
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(Commandparts[3]))
+                            obj.GetComponent<TextMeshPro>().text = obj3.GetComponent<BDVariable>().VariableBuild.VariableData;
+                        else
+                            obj.GetComponent<TextMeshPro>().text = Commandparts[1];
                         break;
                     }
                 }
