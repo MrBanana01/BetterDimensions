@@ -19,8 +19,10 @@ Commands are separated with the charater '/'. The first word is the starting com
 The "Cool object name with variable comp" should be replaced with a gameobject's name that has a BDVariable component. And the "Data to change to" is the value that the gameobject's BDVariable component will change to.
 
 The MethodTypes are "Awake" and "Manual".
+```
 Manual = must be ran by another method
 Awake = gets ran on map load & can be ran by another method
+```
 
 ![method](https://github.com/MrBanana01/BetterDimensions/blob/master/Documentation%20Images/Screenshot%202024-05-31%20150716.png?raw=true)
 
