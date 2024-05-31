@@ -34,8 +34,7 @@ namespace BetterDimensions.Content {
         }
 
         void DimensionEntered(string DimensionName) {
-            foreach (Transform child in MapObjectsParent.transform)
-                AllObjects.Add(child.gameObject);
+            AllObjects = GetAllChildren(MapObjectsParent.transform);
 
             ApplyCommands();
         }
@@ -61,6 +60,19 @@ namespace BetterDimensions.Content {
                         }
                     }
                 }
+            }
+        }
+
+        public List<GameObject> GetAllChildren(Transform parent) {
+            List<GameObject> children = new List<GameObject>();
+            GetChildrenLoop(parent, children);
+            return children;
+        }
+
+        void GetChildrenLoop(Transform parent, List<GameObject> children) {
+            foreach (Transform child in parent) {
+                children.Add(child.gameObject);
+                GetChildrenLoop(child, children);
             }
         }
 
@@ -186,6 +198,15 @@ namespace BetterDimensions.Content {
             }
         }
 
+        public GameObject FindObjectInDimension(string ObjectName) {
+            foreach(GameObject obj in AllObjects) {
+                if(obj.name == ObjectName)
+                    return obj;
+            }
+
+            return null;
+        }
+
         public async void RunCommands(BDMethod method) {
             string[] MethodCommands = method.Commands.Split('|');
 
@@ -248,7 +269,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
 
                         if(obj is null || obj.GetComponent<BDMethod>() is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject method to run");
@@ -265,7 +286,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
 
                         if (obj is null || obj.GetComponent<BDVariable>() is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject variable to check");
@@ -286,7 +307,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
 
                         if (obj is null || obj.GetComponent<BDVariable>() is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"runmethod\" but put an invalid GameObject variable to check");
@@ -307,7 +328,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
                         BDVariable BDvar = obj.GetComponent<BDVariable>();
 
                         if (obj is null || BDvar is null) {
@@ -343,23 +364,17 @@ namespace BetterDimensions.Content {
                             case "both":
                                 trigger.Type = TriggerType.BothHands;
                                 break;
-                            case "body":
-                                trigger.Type = TriggerType.Body;
-                                break;
-                            case "all":
-                                trigger.Type = TriggerType.All;
-                                break;
                         }
                         break;
                     }
 
                     if (CheckParts[0] is "setactive" && Commandparts[0] == CheckParts[0]) {
-                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1]) || string.IsNullOrWhiteSpace(Commandparts[1])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"setactive\" but some values were empty");
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
 
                         if (obj is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"setactive\" on an object but that object didn't exist");
@@ -392,7 +407,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
 
                         if (obj is null || obj.GetComponent<AudioSource>() is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"playaudio\" but the targeted GameObject didn't have an audio source or didn't exist");
