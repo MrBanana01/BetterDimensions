@@ -42,21 +42,33 @@ namespace BetterDimensions.Content {
         }
 
         void EventCalled(GameObject obj, int ID) {
-            foreach(GameObject BDobj in AllObjects) {
-                if(BDobj.GetComponent<BDEvent>() != null) {
+            Debug.Log("Event gotten");
+            Debug.Log(AllObjects);
+            Debug.Log(AllObjects.Count);
+            foreach (GameObject BDobj in AllObjects) {
+                Debug.Log("looped gameobject");
+                if (BDobj.GetComponent<BDEvent>() != null) {
+                    Debug.Log("object has BDEvent");
                     BDEvent Event = BDobj.GetComponent<BDEvent>();
-                    if (Event.EventBuild.EventID == ID) {
+                    Debug.Log(Event);
+                    if (Event.EventID == ID) {
+                        Debug.Log("EventID is correct");
                         string[] MethodCommands = Event.ObjectCommands.Split('|');
                         foreach (string cmd in MethodCommands) {
+                            Debug.Log("Cycle through method commands");
                             GameObject objInMap = DimensionTools.FindObjectInDimension(cmd);
+                            Debug.Log("found object");
                             if (objInMap.GetComponent<BDMethod>() is null) {
                                 Debug.LogError($"Object {obj.name} recived an event and tried to execute a method but the method was not found");
                                 break;
                             }
 
+                            Debug.Log("has method cmd");
+
                             if (!Event.EventRan) {
+                                Debug.Log("run cmd");
                                 RunCommands(objInMap.GetComponent<BDMethod>());
-                                if (Event.EventBuild.type is BetterDimensionsEditorTools.EventType.OneTrigger)
+                                if (Event.type is BetterDimensionsEditorTools.EventType.OneTrigger)
                                     Event.EventRan = true;
                             }
                         }
@@ -357,9 +369,9 @@ namespace BetterDimensions.Content {
                         }
 
                         if (!BDvar.VariableChanged) {
-                            BDvar.VariableBuild.VariableData = Commandparts[2];
+                            BDvar.VariableData = Commandparts[2];
 
-                            if(BDvar.VariableBuild.Type == VariableType.OneChange)
+                            if(BDvar.Type == VariableType.OneChange)
                                 BDvar.VariableChanged = true;
                         }
                         break;
@@ -484,7 +496,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        obj.GetComponent<BDVariable>().VariableBuild.VariableData = randomValue.ToString();
+                        obj.GetComponent<BDVariable>().VariableData = randomValue.ToString();
                         RunEvent(method.gameObject, int.Parse(Commandparts[4]));
                         break;
                     }
@@ -507,7 +519,7 @@ namespace BetterDimensions.Content {
                         }
 
                         if (!string.IsNullOrWhiteSpace(Commandparts[3]))
-                            obj.GetComponent<TextMeshPro>().text = obj3.GetComponent<BDVariable>().VariableBuild.VariableData;
+                            obj.GetComponent<TextMeshPro>().text = obj3.GetComponent<BDVariable>().VariableData;
                         else
                             obj.GetComponent<TextMeshPro>().text = Commandparts[1];
                         break;
