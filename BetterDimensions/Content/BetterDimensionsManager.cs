@@ -418,6 +418,23 @@ namespace BetterDimensions.Content {
                         break;
                     }
 
+                    if (CheckParts[0] is "stopaudio" && Commandparts[0] == CheckParts[0]) {
+                        if (string.IsNullOrWhiteSpace(Commandparts[1])) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"stopaudio\" but some values were empty");
+                            break;
+                        }
+
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
+
+                        if (obj is null || obj.GetComponent<AudioSource>() is null) {
+                            Debug.LogError($"Object {method.gameObject.name} tried running \"stopaudio\" but the targeted GameObject didn't have an audio source or didn't exist");
+                            break;
+                        }
+
+                        obj.GetComponent<AudioSource>().Stop();
+                        break;
+                    }
+
                     if (CheckParts[0] is "starttimer" && Commandparts[0] == CheckParts[0]) {
                         if (string.IsNullOrWhiteSpace(Commandparts[1])) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"starttimer\" but some values were empty");

@@ -20,15 +20,15 @@ namespace BetterDimensions.Content {
         void OnTriggerEnter(Collider other) {
             switch (Type) {
                 case TriggerType.RightHand:
-                    if(other.name is "")
+                    if(other.name is "RightHandTriggerCollider")
                         BetterDimensionsManager.instance?.RunEvent(gameObject, ID);
                     break;
                 case TriggerType.LeftHand:
-                    if (other.name is "")
+                    if (other.name is "LeftHandTriggerCollider")
                         BetterDimensionsManager.instance?.RunEvent(gameObject, ID);
                     break;
                 case TriggerType.BothHands:
-                    if (other.name is "")
+                    if (other.name is "RightHandTriggerCollider" || other.name is "LeftHandTriggerCollider")
                         BetterDimensionsManager.instance?.RunEvent(gameObject, ID);
                     break;
             }
