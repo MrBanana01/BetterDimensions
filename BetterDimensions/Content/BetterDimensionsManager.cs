@@ -45,7 +45,6 @@ namespace BetterDimensions.Content {
             foreach (GameObject BDobj in AllObjects) {
                 if (BDobj.GetComponent<BDEvent>() != null) {
                     BDEvent Event = BDobj.GetComponent<BDEvent>();
-                    Debug.Log(Event);
                     if (Event.EventID == ID) {
                         string[] MethodCommands = Event.ObjectCommands.Split('|');
                         foreach (string cmd in MethodCommands) {
