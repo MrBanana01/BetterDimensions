@@ -501,7 +501,7 @@ namespace BetterDimensions.Content {
                         GameObject obj3 = null;
 
                         if (!string.IsNullOrWhiteSpace(Commandparts[3]))
-                           obj3 = DimensionTools.FindObjectInDimension(Commandparts[3]);
+                           obj3 = FindObjectInDimension(Commandparts[3]);
 
                         if (obj is null || obj.GetComponent<TextMeshPro>() is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"settext\" but no objects were found with the TextMeshPro comp");
