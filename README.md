@@ -40,3 +40,16 @@ When a method runs an event, it also sends an "EventID". And the BDEvent compone
 ![next](https://github.com/MrBanana01/BetterDimensions/blob/master/Documentation%20Images/Screenshot%202024-05-31%20151950.png?raw=true)
 
 ![runmethod](https://github.com/MrBanana01/BetterDimensions/blob/master/Documentation%20Images/Screenshot%202024-05-31%20152000.png?raw=true)
+
+---------------------------------------------------------------------------------------------------------
+
+# how do variables work?!?!
+Variables hold data and can be gotten later with the "if" and "ifnot" commands.
+here's an example on how you would use an "if" and "ifnot" command:
+
+Variables also have a few types:
+```
+Regular = Regular and can be gotten and changed
+OneChange = can only be changed once but can still be gotten mutliple times
+GetOnly = Cannot be changed and can only be gotten
+```
