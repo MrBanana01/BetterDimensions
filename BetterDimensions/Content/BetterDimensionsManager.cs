@@ -42,31 +42,21 @@ namespace BetterDimensions.Content {
         }
 
         void EventCalled(GameObject obj, int ID) {
-            Debug.Log("Event gotten");
-            Debug.Log(AllObjects);
-            Debug.Log(AllObjects.Count);
             foreach (GameObject BDobj in AllObjects) {
-                Debug.Log("looped gameobject");
                 if (BDobj.GetComponent<BDEvent>() != null) {
-                    Debug.Log("object has BDEvent");
                     BDEvent Event = BDobj.GetComponent<BDEvent>();
                     Debug.Log(Event);
                     if (Event.EventID == ID) {
-                        Debug.Log("EventID is correct");
                         string[] MethodCommands = Event.ObjectCommands.Split('|');
                         foreach (string cmd in MethodCommands) {
-                            Debug.Log("Cycle through method commands");
-                            GameObject objInMap = DimensionTools.FindObjectInDimension(cmd);
-                            Debug.Log("found object");
+                            GameObject objInMap = FindObjectInDimension(cmd);
                             if (objInMap.GetComponent<BDMethod>() is null) {
                                 Debug.LogError($"Object {obj.name} recived an event and tried to execute a method but the method was not found");
                                 break;
                             }
 
-                            Debug.Log("has method cmd");
 
                             if (!Event.EventRan) {
-                                Debug.Log("run cmd");
                                 RunCommands(objInMap.GetComponent<BDMethod>());
                                 if (Event.type is BetterDimensionsEditorTools.EventType.OneTrigger)
                                     Event.EventRan = true;
@@ -253,7 +243,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[1]);
+                        GameObject obj = FindObjectInDimension(Commandparts[1]);
 
                         if (obj is null || obj.GetComponent<BDMethod>() is null) {
                             Debug.LogError($"Object {method.gameObject.name} tried running \"\" but");
@@ -507,7 +497,7 @@ namespace BetterDimensions.Content {
                             break;
                         }
 
-                        GameObject obj = DimensionTools.FindObjectInDimension(Commandparts[2]);
+                        GameObject obj = FindObjectInDimension(Commandparts[2]);
                         GameObject obj3 = null;
 
                         if (!string.IsNullOrWhiteSpace(Commandparts[3]))
