@@ -45,7 +45,15 @@ When a method runs an event, it also sends an "EventID". And the BDEvent compone
 
 # how do variables work?!?!
 Variables hold data and can be gotten later with the "if" and "ifnot" commands.
-here's an example on how you would use an "if" and "ifnot" command:
+here's an example on how you would use an "if" command:
+
+![if](https://github.com/MrBanana01/BetterDimensions/blob/master/Documentation%20Images/Screenshot%202024-05-31%20152804.png?raw=true)
+
+![var](https://github.com/MrBanana01/BetterDimensions/blob/master/Documentation%20Images/Screenshot%202024-05-31%20152814.png?raw=true)
+
+![true](https://github.com/MrBanana01/BetterDimensions/blob/master/Documentation%20Images/Screenshot%202024-05-31%20152823.png?raw=true)
+
+![false](https://github.com/MrBanana01/BetterDimensions/blob/master/Documentation%20Images/Screenshot%202024-05-31%20152831.png?raw=true)
 
 Variables also have a few types:
 ```
@@ -53,3 +61,22 @@ Regular = Regular and can be gotten and changed
 OneChange = can only be changed once but can still be gotten mutliple times
 GetOnly = Cannot be changed and can only be gotten
 ```
+
+---------------------------------------------------------------------------------------------------------------
+
+# All methods:
+- debuglog/message
+- debuglogwarning/message
+- debuglogerror/message
+- runmethod/Gameobject with method
+- if/Gameobject with variable/expectedValue/EventID if true/EventID if false
+- ifnot/Gameobject with variable/expectedValue/EventID if true/EventID if false
+- changevar/Gameobject with variable/variable data to change to
+- addtrigger/EventID/Trigger Type (left, right, both)
+- setactive/gameobject name/bool
+- sethitsound/HitsoundID
+- playaudio/Gameobject with audiosource
+- starttimer/EventID/Length in seconds
+- stopaudio/Gameobject with audiosource
+- randomint/min/max/Gameobject with variable/Event ID
+- settext/newvalue/Gameobject with TMPro/variable
