@@ -7,7 +7,7 @@ A mod for the gorilla tag mod "MonkeDimensions" that adds a whole programming la
 # base things to know.
 Only one BD script can be put on an object at a time.
 
-the charater '|' is what differs it checks for to run commands. For example:
+the charater '|' is what differs when it checks for commands to run. For example:
 `command1|command2|command3`
 
 it will run command1, then command2, and then command3.
