@@ -14,7 +14,7 @@ it will run command1, then command2, and then command3.
 only use this if you need to put multiple commands in the same object.
 
 # how to commands work?!?! 
-Commands are separated with the charater '/'. The first word is the starting command, like "if" or "ifnot" or "playaudio or "stopaudio". The values after that separated by slashes are the input values of the command. For example: `changevar/Cool Object name With Variable Comp/Data to change to` 
+The command and the command values are separated with the charater '/'. The first word is the starting command, like "if" or "ifnot" or "playaudio or "stopaudio". The values after that separated by slashes are the input values of the command. For example: `changevar/Cool Object name With Variable Comp/Data to change to` 
 
 The "Cool object name with variable comp" should be replaced with a gameobject's name that has a BDVariable component. And the "Data to change to" is the value that the gameobject's BDVariable component will change to.
 
